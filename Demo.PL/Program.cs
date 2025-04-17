@@ -1,4 +1,5 @@
-using Demo.BLL.Services;
+using Demo.BLL.Services.Classes;
+using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Data;
 using Demo.DAL.Data.Repositries.Classes;
 using Demo.DAL.Data.Repositries.Interfaces;
@@ -24,6 +25,10 @@ namespace Demo.PL
             });
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepositpry>();
             builder.Services.AddScoped<IDepartmentService, DepartmentService>();
+
+            #region Employee
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            #endregion
             #endregion
 
             var app = builder.Build();
