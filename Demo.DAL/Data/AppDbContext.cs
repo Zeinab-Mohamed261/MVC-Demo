@@ -1,5 +1,6 @@
 ﻿using Demo.DAL.Data.Configurations;
-using Demo.DAL.Models;
+using Demo.DAL.Models.DepartmentModel;
+using Demo.DAL.Models.EmployeeModel;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace Demo.DAL.Data
 
         }
         public DbSet<Department> Departments { get; set; } //table
+        public DbSet<Employee> Employees { get; set; }
 
     }
 }
