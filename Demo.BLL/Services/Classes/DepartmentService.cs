@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DTO.DepartmentsDtos;
 using Demo.BLL.Factories;
+using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Data.Repositries.Classes;
 using Demo.DAL.Data.Repositries.Interfaces;
 using Demo.DAL.Models;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Demo.BLL.Services
+namespace Demo.BLL.Services.Classes
 {
     //primary constructor
     public class DepartmentService(IDepartmentRepository _departmentRepository) : IDepartmentService

@@ -1,6 +1,6 @@
 ﻿using Demo.BLL.DTO;
 using Demo.BLL.DTO.DepartmentsDtos;
-using Demo.BLL.Services;
+using Demo.BLL.Services.Intrfaces;
 using Demo.PL.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -140,31 +140,32 @@ namespace Demo.PL.Controllers
         #endregion
 
         #region Delete Department
-        [HttpGet]
-        public IActionResult Delete(int? id)
-        {
-            if(!id.HasValue) return BadRequest();
-            var department = _departmentService.GetDepartmentById(id.Value);
-            if (department == null) return NotFound();
-            return View(department);
+        #region With Form (Hard-Delete)
+        //[HttpGet]
+        //public IActionResult Delete(int? id)
+        //{
+        //    if (!id.HasValue) return BadRequest();
+        //    var department = _departmentService.GetDepartmentById(id.Value);
+        //    if (department == null) return NotFound();
+        //    return View(department);
 
-        }
+        //}
 
         [HttpPost]
         //id not nullable => user already enter on view of delete with her id
         public IActionResult Delete(int id)
         {
-            if(id ==0) return BadRequest();
+            if (id == 0) return BadRequest();
             try
             {
                 bool deleted = _departmentService.DeleteDepartment(id);
-                if (deleted) 
+                if (deleted)
                     return RedirectToAction(nameof(Index));
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Department is not Deleted");
                     //Needed To Data of Department
-                    return RedirectToAction(nameof(Delete) , new {id = id});
+                    return RedirectToAction(nameof(Delete), new { id = id });
 
                 }
             }
@@ -187,6 +188,10 @@ namespace Demo.PL.Controllers
                 }
             }
         }
+        #endregion
+        #region Modal Delete
+
+        #endregion
         #endregion
     }
 }
