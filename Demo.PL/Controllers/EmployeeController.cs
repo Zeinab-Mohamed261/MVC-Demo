@@ -59,5 +59,16 @@ namespace Demo.PL.Controllers
 
 
         #endregion
+
+        #region Details Of Employee
+        [HttpGet]
+        public IActionResult Details(int? id)
+        {
+            if(!id.HasValue) return BadRequest();  //400
+            var employee = _employeeService.GetEmployeeById(id.Value);
+            if(employee is null) return NotFound();  //404
+            return View(employee);
+        }
+        #endregion
     }
 }
