@@ -131,5 +131,41 @@ namespace Demo.PL.Controllers
             return View(viewModel);
         }
         #endregion
+
+        #region Delete Employee
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            if(id == 0) return BadRequest();  //400
+            try
+            {
+                var deleted = _employeeService.DeleteEmployee(id);
+                if(deleted) 
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Employee is not Deleted");
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                //log exception
+                if (_environment.IsDevelopment())
+                {
+                    //1.Development => log error in console And return same view with error msg
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    //return View(employeeDto);
+                }
+                else
+                {
+                    //2.Deployment  => log error in file | table in database  And return Error view
+                    _logger.LogError(ex.Message);
+                    //return View(employeeDto);
+                }
+                return RedirectToAction(nameof(Index));
+            }
+        }
+        #endregion
     }
 }
