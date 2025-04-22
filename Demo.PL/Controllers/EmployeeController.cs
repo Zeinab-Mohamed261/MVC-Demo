@@ -16,6 +16,17 @@ namespace Demo.PL.Controllers
         public IActionResult Index()
         {
             var Employees = _employeeService.GetAllEmployees();
+            //Extra information
+            //Binding through view dictionary : transfer dta From Action to View    [One Way]
+            //Access Dictionary throgh
+            //1.ViewData  //casting is important    Compilation Time
+            ViewData["Message"]="Hello ViewData";   //inherit from controller base
+            string viewDataMessage = ViewData["Message"] as string;
+
+            //2.ViewBag     In Run Time
+            ViewBag.Message = "Hello ViewBag"; //Dynamic Property
+            string viewBagMessage = ViewBag.Message;
+
             return View(Employees);
         }
 
