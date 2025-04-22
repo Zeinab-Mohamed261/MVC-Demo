@@ -15,10 +15,13 @@ namespace Demo.PL.Controllers
     {
         public IActionResult Index()
         {
+            TempData.Keep();
             var Employees = _employeeService.GetAllEmployees();
             //Extra information
             //Binding through view dictionary : transfer dta From Action to View    [One Way]
             //Access Dictionary throgh
+
+            //[Action => View]
             //1.ViewData  //casting is important    Compilation Time
             ViewData["Message"]="Hello ViewData";   //inherit from controller base
             string viewDataMessage = ViewData["Message"] as string;
@@ -27,6 +30,8 @@ namespace Demo.PL.Controllers
             ViewBag.Message = "Hello ViewBag"; //Dynamic Property
             string viewBagMessage = ViewBag.Message;
 
+            
+            
             return View(Employees);
         }
 
@@ -54,11 +59,19 @@ namespace Demo.PL.Controllers
                         Salary = employeeDto.Salary,
                     };
                     int result = _employeeService.CreateEmployee(employeeCreatedDto);
+
+                    //3.TempData  action =>acrion
                     if (result > 0)
+                    {
+                        TempData["Message"] = "Employee Created Successfully";
                         return RedirectToAction(nameof(Index));
+                    }
+                            
                     else
                     {
+                        TempData["Message"] = "Employee Creatiob failed";
                         ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                        return RedirectToAction(nameof(Index));
                         //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
                     }
                 }
