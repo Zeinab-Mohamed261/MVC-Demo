@@ -77,7 +77,7 @@ namespace Demo.BLL.Services.Classes
             if (employee is null) return false;
             else
             {
-                employee.IsActive = true;
+                employee.IsDeleted = true;
                 return _employeeRepository.Update(employee) >0 ? true : false;
             }
         }

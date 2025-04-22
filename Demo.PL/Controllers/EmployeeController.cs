@@ -4,6 +4,7 @@ using Demo.BLL.Services.Classes;
 using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Models.EmployeeModel;
 using Demo.PL.ViewModels;
+using Demo.PL.ViewModels.Employee;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
@@ -14,7 +15,23 @@ namespace Demo.PL.Controllers
     {
         public IActionResult Index()
         {
+            TempData.Keep();
             var Employees = _employeeService.GetAllEmployees();
+            //Extra information
+            //Binding through view dictionary : transfer dta From Action to View    [One Way]
+            //Access Dictionary throgh
+
+            //[Action => View]
+            //1.ViewData  //casting is important    Compilation Time
+            ViewData["Message"]="Hello ViewData";   //inherit from controller base
+            string viewDataMessage = ViewData["Message"] as string;
+
+            //2.ViewBag     In Run Time
+            ViewBag.Message = "Hello ViewBag"; //Dynamic Property
+            string viewBagMessage = ViewBag.Message;
+
+            
+            
             return View(Employees);
         }
 
@@ -22,18 +39,39 @@ namespace Demo.PL.Controllers
         [HttpGet]
         public IActionResult Create() => View();
         [HttpPost]
-        public IActionResult Create(CreatedEmployeeDto employeeDto)
+        public IActionResult Create(EmployeeViewModel employeeDto)
         {
             if (ModelState.IsValid) //Server side validation
             {
                 try
                 {
-                    int result = _employeeService.CreateEmployee(employeeDto);
+                    var employeeCreatedDto = new CreatedEmployeeDto()
+                    {
+                        Name = employeeDto.Name,
+                        Address = employeeDto.Address,
+                        Age = employeeDto.Age,
+                        IsActive = employeeDto.IsActive,
+                        Email = employeeDto.Email,
+                        EmployeeType = employeeDto.EmployeeType,
+                        Gender = employeeDto.Gender,
+                        HiringDate = employeeDto.HiringDate,
+                        PhoneNumber = employeeDto.PhoneNumber,
+                        Salary = employeeDto.Salary,
+                    };
+                    int result = _employeeService.CreateEmployee(employeeCreatedDto);
+
+                    //3.TempData  action =>acrion
                     if (result > 0)
+                    {
+                        TempData["Message"] = "Employee Created Successfully";
                         return RedirectToAction(nameof(Index));
+                    }
+                            
                     else
                     {
+                        TempData["Message"] = "Employee Creatiob failed";
                         ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                        return RedirectToAction(nameof(Index));
                         //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
                     }
                 }
@@ -80,9 +118,8 @@ namespace Demo.PL.Controllers
             if (!id.HasValue) return BadRequest();  //400
             var employee = _employeeService.GetEmployeeById(id.Value);
             if (employee is null) return NotFound();  //404
-            var employeeDto = new UpdateEmployeeDto()
+            var employeeDto = new EmployeeViewModel()
             {
-                Id = employee.Id,
                 Name = employee.Name,
                 Salary = employee.Salary,
                 Address = employee.Address,
@@ -98,13 +135,27 @@ namespace Demo.PL.Controllers
         }
         [ValidateAntiForgeryToken]  //id from Route  لازم
         [HttpPost]
-        public IActionResult Edit([FromRoute] int? id, UpdateEmployeeDto viewModel)
+        public IActionResult Edit([FromRoute] int? id, EmployeeViewModel viewModel)
         {
 
             if (!ModelState.IsValid) return View(viewModel);
             try
             {
-                int result = _employeeService.UpdateEmployee(viewModel);
+                var employeeUpdatedDto = new UpdateEmployeeDto()
+                {
+                    Id = id.Value,
+                    Name = viewModel.Name,
+                    Address = viewModel.Address,
+                    Age = viewModel.Age,
+                    IsActive = viewModel.IsActive,
+                    Email = viewModel.Email,
+                    EmployeeType = viewModel.EmployeeType,
+                    Gender = viewModel.Gender,
+                    HiringDate = viewModel.HiringDate,
+                    PhoneNumber = viewModel.PhoneNumber,
+                    Salary = viewModel.Salary,
+                };
+                int result = _employeeService.UpdateEmployee(employeeUpdatedDto);
                 if (result > 0)
                     return RedirectToAction(nameof(Index));
                 else
@@ -129,6 +180,42 @@ namespace Demo.PL.Controllers
                 }
             }
             return View(viewModel);
+        }
+        #endregion
+
+        #region Delete Employee
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            if(id == 0) return BadRequest();  //400
+            try
+            {
+                var deleted = _employeeService.DeleteEmployee(id);
+                if(deleted) 
+                    return RedirectToAction(nameof(Index));
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Employee is not Deleted");
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            catch (Exception ex)
+            {
+                //log exception
+                if (_environment.IsDevelopment())
+                {
+                    //1.Development => log error in console And return same view with error msg
+                    ModelState.AddModelError(string.Empty, ex.Message);
+                    //return View(employeeDto);
+                }
+                else
+                {
+                    //2.Deployment  => log error in file | table in database  And return Error view
+                    _logger.LogError(ex.Message);
+                    //return View(employeeDto);
+                }
+                return RedirectToAction(nameof(Index));
+            }
         }
         #endregion
     }
