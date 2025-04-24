@@ -9,15 +9,15 @@ namespace Demo.DAL.Data.Repositries.Classes
 {
     public class UnitOfWork : IUnitOfWork  /* , IDisposable*/
     {
-        private IDepartmentRepository _DepartmentRepository;
-        private IEmployeeRepository _EmployeeRepository;
+        private Lazy<IDepartmentRepository> _DepartmentRepository;
+        private Lazy<IEmployeeRepository> _EmployeeRepository;
         private readonly AppDbContext _dbContext;
 
-        public UnitOfWork(IDepartmentRepository departmentRepository , IEmployeeRepository employeeRepository , AppDbContext dbContext)
+        public UnitOfWork( AppDbContext dbContext)
         {
             
-            _DepartmentRepository = departmentRepository;
-            _EmployeeRepository = employeeRepository;
+            _DepartmentRepository = new Lazy<IDepartmentRepository>(() => new DepartmentRepositpry(dbContext));
+            _EmployeeRepository = new Lazy<IEmployeeRepository>(() => new EmployeeRepository(dbContext));
             _dbContext = dbContext;
         }
 
@@ -25,22 +25,14 @@ namespace Demo.DAL.Data.Repositries.Classes
         {
             get
             {
-                return _EmployeeRepository;
-            }
-            set
-            {
-                _EmployeeRepository = value;
+                return _EmployeeRepository.Value;
             }
         }
         public IDepartmentRepository DepartmentRepository
         {
             get
             {
-                return _DepartmentRepository;
-            }
-            set
-            {
-                _DepartmentRepository = value;
+                return _DepartmentRepository.Value;
             }
         }
         
