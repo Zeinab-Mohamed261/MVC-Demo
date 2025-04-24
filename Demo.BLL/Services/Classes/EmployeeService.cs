@@ -37,6 +37,30 @@ namespace Demo.BLL.Services.Classes
             return returnedEmployees;
         }
 
+        public IEnumerable<EmployeeDto> SearchEmployeeByName(string name)
+        {
+            var employees = _employeeRepository.GetEmployeeByName(name.ToLower());
+            //     Src              =>     Dest
+            //IEnumerable<Employee> => IEnumebrale<EmployeeDto>
+            var returnedEmployees = _mapper.Map<IEnumerable<Employee>, IEnumerable<EmployeeDto>>(employees);   //Auto Mapper
+
+            #region Manual Mapping
+            //var returnedEmployees = employees.Select(emp => new EmployeeDto()
+            //{
+            //    Id = emp.Id,
+            //    Name = emp.Name,
+            //    Age = emp.Age,
+            //    Email = emp.Email,
+            //    Salary = emp.Salary,
+            //    IsActive = emp.IsActive,
+            //    EmployeeType = emp.EmployeeType.ToString(),
+            //    Gender = emp.Gender.ToString()
+            //}); 
+            #endregion
+
+            return returnedEmployees;
+        }
+
         public EmployeeDetailsDto? GetEmployeeById(int id)
         {
             var employee = _employeeRepository.GetById(id);

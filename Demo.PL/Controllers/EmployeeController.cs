@@ -10,29 +10,35 @@ using Microsoft.AspNetCore.Mvc;
 namespace Demo.PL.Controllers
 {
     public class EmployeeController (IEmployeeService _employeeService,
-                                      
+                                      IDepartmentService _departmentService,
                                       ILogger<EmployeeController> _logger,
                                       IWebHostEnvironment _environment) : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string? EmployeeSearchName)
         {
-            TempData.Keep();
-            var Employees = _employeeService.GetAllEmployees();
+            //TempData.Keep();
+
             //Extra information
             //Binding through view dictionary : transfer dta From Action to View    [One Way]
             //Access Dictionary throgh
 
             //[Action => View]
             //1.ViewData  //casting is important    Compilation Time
-            ViewData["Message"]="Hello ViewData";   //inherit from controller base
-            string viewDataMessage = ViewData["Message"] as string;
+            //ViewData["Message"]="Hello ViewData";   //inherit from controller base
+            //string viewDataMessage = ViewData["Message"] as string;
 
-            //2.ViewBag     In Run Time
-            ViewBag.Message = "Hello ViewBag"; //Dynamic Property
-            string viewBagMessage = ViewBag.Message;
-
-            
-            
+            ////2.ViewBag     In Run Time
+            //ViewBag.Message = "Hello ViewBag"; //Dynamic Property
+            //string viewBagMessage = ViewBag.Message;
+            dynamic Employees = null!;
+            if(string.IsNullOrEmpty(EmployeeSearchName))
+            {
+                Employees = _employeeService.GetAllEmployees();
+            }
+            else
+            {
+                Employees = _employeeService.SearchEmployeeByName(EmployeeSearchName);
+            }
             return View(Employees);
         }
 

@@ -12,9 +12,13 @@ namespace Demo.DAL.Data.Repositries.Classes
 {
     public class EmployeeRepository(AppDbContext dbContext) : GenericRepository<Employee>(dbContext)/*common*/, IEmployeeRepository /*specific To Employee*/
     {
-        public IQueryable<Employee> GetEmployeeByAddress(string address)
+        //public IQueryable<Employee> GetEmployeeByAddress(string address)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public IQueryable<Employee> GetEmployeeByName(string name)
         {
-            throw new NotImplementedException();
+            return dbContext.Employees.Where(E => E.Name.ToLower().Contains(name));
         }
     }
 }

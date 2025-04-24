@@ -11,6 +11,8 @@ namespace Demo.BLL.Services.Intrfaces
     {
         //Get All Employees
         IEnumerable<EmployeeDto> GetAllEmployees(bool withTracking = false);
+
+        IEnumerable<EmployeeDto> SearchEmployeeByName(string name);
         //Get Employee By Id
         EmployeeDetailsDto? GetEmployeeById(int id);
         //Add Employee
