@@ -42,5 +42,6 @@ namespace Demo.BLL.DTO.EmploeesDtos
         public Gender Gender { get; set; }
         [Display(Name = "Emoployee Type")]
         public EmployeeType EmployeeType { get; set; }
+        public int? DepartmentId { get; set; }
     }
 }

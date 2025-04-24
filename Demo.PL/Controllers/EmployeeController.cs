@@ -10,34 +10,46 @@ using Microsoft.AspNetCore.Mvc;
 namespace Demo.PL.Controllers
 {
     public class EmployeeController (IEmployeeService _employeeService,
+                                      IDepartmentService _departmentService,
                                       ILogger<EmployeeController> _logger,
                                       IWebHostEnvironment _environment) : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(string? EmployeeSearchName)
         {
-            TempData.Keep();
-            var Employees = _employeeService.GetAllEmployees();
+            //TempData.Keep();
+
             //Extra information
             //Binding through view dictionary : transfer dta From Action to View    [One Way]
             //Access Dictionary throgh
 
             //[Action => View]
             //1.ViewData  //casting is important    Compilation Time
-            ViewData["Message"]="Hello ViewData";   //inherit from controller base
-            string viewDataMessage = ViewData["Message"] as string;
+            //ViewData["Message"]="Hello ViewData";   //inherit from controller base
+            //string viewDataMessage = ViewData["Message"] as string;
 
-            //2.ViewBag     In Run Time
-            ViewBag.Message = "Hello ViewBag"; //Dynamic Property
-            string viewBagMessage = ViewBag.Message;
-
-            
-            
+            ////2.ViewBag     In Run Time
+            //ViewBag.Message = "Hello ViewBag"; //Dynamic Property
+            //string viewBagMessage = ViewBag.Message;
+            dynamic Employees = null!;
+            if(string.IsNullOrEmpty(EmployeeSearchName))
+            {
+                Employees = _employeeService.GetAllEmployees();
+            }
+            else
+            {
+                Employees = _employeeService.SearchEmployeeByName(EmployeeSearchName);
+            }
             return View(Employees);
         }
 
         #region Create Department
         [HttpGet]
-        public IActionResult Create() => View();
+        public IActionResult Create(/*[FromServices]IDepartmentService _departmentService*/ /*show depts in emps*/)
+        {
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
+            //ViewBag.Departments = _departmentService.GetAllDepartments();   Errors in Run time
+            return View();
+        }
         [HttpPost]
         public IActionResult Create(EmployeeViewModel employeeDto)
         {
@@ -57,23 +69,34 @@ namespace Demo.PL.Controllers
                         HiringDate = employeeDto.HiringDate,
                         PhoneNumber = employeeDto.PhoneNumber,
                         Salary = employeeDto.Salary,
+                        DepartmentId = employeeDto.DepartmentId,
                     };
-                    int result = _employeeService.CreateEmployee(employeeCreatedDto);
+                    //create => created , saveChanges()
+                    /*int result = */
+                    _employeeService.CreateEmployee(employeeCreatedDto);
+                    //update => updated , saveChanges()
+                    //edit deptId => updated , saveChanges()
+
+                    //delete => deleted , saveChanges()
+
+                    //create , update , edit , delete => saveChanges()
+
+
 
                     //3.TempData  action =>acrion
-                    if (result > 0)
-                    {
-                        TempData["Message"] = "Employee Created Successfully";
-                        return RedirectToAction(nameof(Index));
-                    }
+                    //if (result > 0)
+                    //{
+                    //    TempData["Message"] = "Employee Created Successfully";
+                    //    return RedirectToAction(nameof(Index));
+                    //}
                             
-                    else
-                    {
-                        TempData["Message"] = "Employee Creatiob failed";
-                        ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
-                        return RedirectToAction(nameof(Index));
-                        //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
-                    }
+                    //else
+                    //{
+                    //    TempData["Message"] = "Employee Creatiob failed";
+                    //    ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                    //    return RedirectToAction(nameof(Index));
+                    //    //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
+                    //}
                 }
                 catch (Exception ex)
                 {
@@ -113,7 +136,7 @@ namespace Demo.PL.Controllers
 
         #region Edit Employee
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int? id  /*[FromServices] IDepartmentService _departmentService*/)
         {
             if (!id.HasValue) return BadRequest();  //400
             var employee = _employeeService.GetEmployeeById(id.Value);
@@ -131,6 +154,7 @@ namespace Demo.PL.Controllers
                 Gender = Enum.Parse<Gender>(employee.Gender) ,//To Convert String to Enum
                 EmployeeType = Enum.Parse<EmployeeType>(employee.EmployeeType) 
             };
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
             return View(employeeDto);
         }
         [ValidateAntiForgeryToken]  //id from Route  لازم
