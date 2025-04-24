@@ -71,22 +71,32 @@ namespace Demo.PL.Controllers
                         Salary = employeeDto.Salary,
                         DepartmentId = employeeDto.DepartmentId,
                     };
-                    int result = _employeeService.CreateEmployee(employeeCreatedDto);
+                    //create => created , saveChanges()
+                    /*int result = */
+                    _employeeService.CreateEmployee(employeeCreatedDto);
+                    //update => updated , saveChanges()
+                    //edit deptId => updated , saveChanges()
+
+                    //delete => deleted , saveChanges()
+
+                    //create , update , edit , delete => saveChanges()
+
+
 
                     //3.TempData  action =>acrion
-                    if (result > 0)
-                    {
-                        TempData["Message"] = "Employee Created Successfully";
-                        return RedirectToAction(nameof(Index));
-                    }
+                    //if (result > 0)
+                    //{
+                    //    TempData["Message"] = "Employee Created Successfully";
+                    //    return RedirectToAction(nameof(Index));
+                    //}
                             
-                    else
-                    {
-                        TempData["Message"] = "Employee Creatiob failed";
-                        ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
-                        return RedirectToAction(nameof(Index));
-                        //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
-                    }
+                    //else
+                    //{
+                    //    TempData["Message"] = "Employee Creatiob failed";
+                    //    ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                    //    return RedirectToAction(nameof(Index));
+                    //    //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
+                    //}
                 }
                 catch (Exception ex)
                 {

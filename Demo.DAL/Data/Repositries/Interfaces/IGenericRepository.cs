@@ -14,10 +14,10 @@ namespace Demo.DAL.Data.Repositries.Interfaces
         //Geet By Id
         TEntity GetById(int id);
         //Update
-        int Update(TEntity Entity);  //int عشان بترجع عدد rows اللي حصلها تعديل
+        void Update(TEntity Entity);  //int عشان بترجع عدد rows اللي حصلها تعديل
         //Delete
-        int Delete(TEntity Entity);  //delete عشان بترجع عدد rows اللي حصلها تعديل
+        void Delete(TEntity Entity);  //delete عشان بترجع عدد rows اللي حصلها تعديل
         //Insert
-        int Add(TEntity Entity);    //insert عشان بترجع عدد rows اللي حصلها تعديل
+        void Add(TEntity Entity);    //insert عشان بترجع عدد rows اللي حصلها تعديل
     }
 }
