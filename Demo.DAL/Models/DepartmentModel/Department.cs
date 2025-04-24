@@ -13,7 +13,7 @@ namespace Demo.DAL.Models.DepartmentModel
         public string Code { get; set; }
         public string? Descriotion { get; set; }
         //Navigation Property => [Many]
-        public ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();//uniuque collection of data
+        public virtual ICollection<Employee> Employees { get; set; } = new HashSet<Employee>();//uniuque collection of data
 
     }
 }

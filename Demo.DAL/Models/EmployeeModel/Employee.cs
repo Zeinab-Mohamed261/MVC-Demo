@@ -23,7 +23,7 @@ namespace Demo.DAL.Models.EmployeeModel
         //[ForeignKey("Department")]
         public int? DepartmentId { get; set; } //FK
         //Navigation Property => [One]
-        public Department Department { get; set; }
+        public virtual Department? Department { get; set; }
         
 
     }

@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Demo.PL.Controllers
 {
     public class EmployeeController (IEmployeeService _employeeService,
+                                      
                                       ILogger<EmployeeController> _logger,
                                       IWebHostEnvironment _environment) : Controller
     {
@@ -37,7 +38,12 @@ namespace Demo.PL.Controllers
 
         #region Create Department
         [HttpGet]
-        public IActionResult Create() => View();
+        public IActionResult Create(/*[FromServices]IDepartmentService _departmentService*/ /*show depts in emps*/)
+        {
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
+            //ViewBag.Departments = _departmentService.GetAllDepartments();   Errors in Run time
+            return View();
+        }
         [HttpPost]
         public IActionResult Create(EmployeeViewModel employeeDto)
         {
@@ -57,6 +63,7 @@ namespace Demo.PL.Controllers
                         HiringDate = employeeDto.HiringDate,
                         PhoneNumber = employeeDto.PhoneNumber,
                         Salary = employeeDto.Salary,
+                        DepartmentId = employeeDto.DepartmentId,
                     };
                     int result = _employeeService.CreateEmployee(employeeCreatedDto);
 
@@ -113,7 +120,7 @@ namespace Demo.PL.Controllers
 
         #region Edit Employee
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int? id  /*[FromServices] IDepartmentService _departmentService*/)
         {
             if (!id.HasValue) return BadRequest();  //400
             var employee = _employeeService.GetEmployeeById(id.Value);
@@ -131,6 +138,7 @@ namespace Demo.PL.Controllers
                 Gender = Enum.Parse<Gender>(employee.Gender) ,//To Convert String to Enum
                 EmployeeType = Enum.Parse<EmployeeType>(employee.EmployeeType) 
             };
+            //ViewData["Departments"] = _departmentService.GetAllDepartments();
             return View(employeeDto);
         }
         [ValidateAntiForgeryToken]  //id from Route  لازم

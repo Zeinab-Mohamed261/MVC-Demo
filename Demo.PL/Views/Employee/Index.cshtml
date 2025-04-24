@@ -44,6 +44,7 @@
                 <th>@Html.DisplayNameFor(e => e.EmpType)</th>
                 <th>@Html.DisplayNameFor(e => e.Age)</th>
                 <th>@Html.DisplayNameFor(e => e.Salary)</th>
+                <th>@Html.DisplayNameFor(e => e.Department)</th>
                 <th>@Html.DisplayNameFor(e => e.IsActive)</th>
                 <th>@Html.DisplayNameFor(e => e.EmpGender)</th>
                 <th>Details </th>
@@ -62,7 +63,7 @@
                     <td>@employee.Age</td>
 
                     <td>@Html.DisplayFor(E => employee.Salary)</td>
-                    
+                    <td>@(string.IsNullOrEmpty(employee.Department) ? "No Department" : employee.Department)</td>
 
                     <td>
                         <i class="fa @(employee.IsActive ? "fa-solid fa-circle-check text-success" : "fa-solid fa-circle-xmark text-danger")"></i>
