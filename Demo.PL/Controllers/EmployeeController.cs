@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DTO.DepartmentsDtos;
 using Demo.BLL.DTO.EmploeesDtos;
+using Demo.BLL.Services.AttachmentService;
 using Demo.BLL.Services.Classes;
 using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Models.EmployeeModel;
@@ -12,7 +13,8 @@ namespace Demo.PL.Controllers
     public class EmployeeController (IEmployeeService _employeeService,
                                       IDepartmentService _departmentService,
                                       ILogger<EmployeeController> _logger,
-                                      IWebHostEnvironment _environment) : Controller
+                                      IWebHostEnvironment _environment ,
+                                      IAttachmentService attachmentService) : Controller
     {
         public IActionResult Index(string? EmployeeSearchName)
         {
@@ -215,8 +217,11 @@ namespace Demo.PL.Controllers
             try
             {
                 var deleted = _employeeService.DeleteEmployee(id);
-                if(deleted) 
+                if(deleted)
+                {
+                    
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Employee is not Deleted");

@@ -12,6 +12,6 @@ namespace Demo.BLL.Services.AttachmentService
         //Upload
         public string? /*fileName*/ Upload(IFormFile file, string folderName);
         //Delete
-        public bool Delete(string filePath);
+        public bool Delete(string fileName , string folderName);
     }
 }

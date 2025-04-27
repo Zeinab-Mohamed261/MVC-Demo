@@ -106,12 +106,21 @@ namespace Demo.BLL.Services.Classes
         public bool DeleteEmployee(int id)  //Soft Delete
         {
             var employee = unitOfWork.EmployeeRepository.GetById(id);
+            
             if (employee is null) return false;
             else
             {
                 employee.IsDeleted = true;
-                 unitOfWork.EmployeeRepository.Update(employee) ;
-               return unitOfWork.SaveChanges() > 0 ?true : false;
+                employee.ImageName = null;
+                unitOfWork.EmployeeRepository.Update(employee) ;
+               int result = unitOfWork.SaveChanges();
+                if (result > 0)
+                {
+                    attachmentService.Delete(employee.ImageName, "images");
+                    return true;
+                }
+                else
+                    return false;
             }
         }
 

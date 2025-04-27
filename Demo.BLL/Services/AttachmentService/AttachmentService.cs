@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.Linq;
 using System.Net.Mail;
@@ -42,8 +43,9 @@ namespace Demo.BLL.Services.AttachmentService
             //8.Return FileName To Store In Database
             return fileName;
         }
-        public bool Delete(string filePath)
+        public bool Delete(string fileName , string folderName)
         {
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Files", folderName , fileName);
             if (!File.Exists(filePath)) return false;
             else
             {
