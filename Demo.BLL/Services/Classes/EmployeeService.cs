@@ -87,7 +87,7 @@ namespace Demo.BLL.Services.Classes
 
             //}
 
-            return employee is null ? null : _mapper.Map<EmployeeDetailsDto>(employee);
+            return employee is null ? null : _mapper.Map<Employee,EmployeeDetailsDto>(employee);
         }
 
         public int CreateEmployee(CreatedEmployeeDto employeeDto)
