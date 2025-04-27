@@ -70,10 +70,10 @@ namespace Demo.PL.Controllers
                         PhoneNumber = employeeDto.PhoneNumber,
                         Salary = employeeDto.Salary,
                         DepartmentId = employeeDto.DepartmentId,
+                        Image = employeeDto.Image,
                     };
                     //create => created , saveChanges()
-                    /*int result = */
-                    _employeeService.CreateEmployee(employeeCreatedDto);
+                    int result =_employeeService.CreateEmployee(employeeCreatedDto);
                     //update => updated , saveChanges()
                     //edit deptId => updated , saveChanges()
 
@@ -84,19 +84,19 @@ namespace Demo.PL.Controllers
 
 
                     //3.TempData  action =>acrion
-                    //if (result > 0)
-                    //{
-                    //    TempData["Message"] = "Employee Created Successfully";
-                    //    return RedirectToAction(nameof(Index));
-                    //}
-                            
-                    //else
-                    //{
-                    //    TempData["Message"] = "Employee Creatiob failed";
-                    //    ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
-                    //    return RedirectToAction(nameof(Index));
-                    //    //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
-                    //}
+                    if (result > 0)
+                    {
+                        TempData["Message"] = "Employee Created Successfully";
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    else
+                    {
+                        TempData["Message"] = "Employee Creatiob failed";
+                        ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                        return RedirectToAction(nameof(Index));
+                        //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
+                    }
                 }
                 catch (Exception ex)
                 {

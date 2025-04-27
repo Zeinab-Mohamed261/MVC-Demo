@@ -1,4 +1,5 @@
 using Demo.BLL.Profiles;
+using Demo.BLL.Services.AttachmentService;
 using Demo.BLL.Services.Classes;
 using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Data;
@@ -35,6 +36,8 @@ namespace Demo.PL
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IEmployeeService , EmployeeService>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            builder.Services.AddScoped<IAttachmentService, AttachmentService>();
             #endregion
             #endregion
 
