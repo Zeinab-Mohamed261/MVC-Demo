@@ -5,6 +5,8 @@ using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Data;
 using Demo.DAL.Data.Repositries.Classes;
 using Demo.DAL.Data.Repositries.Interfaces;
+using Demo.DAL.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Demo.PL
@@ -35,10 +37,23 @@ namespace Demo.PL
             //builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
             builder.Services.AddAutoMapper(M => M.AddProfile(new MappingProfiles()));
             builder.Services.AddScoped<IEmployeeService , EmployeeService>();
+
+            #endregion
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddScoped<IAttachmentService, AttachmentService>();
-            #endregion
+
+            //builder.Services.AddScoped<UserManager<ApplicationUser>>();
+            //builder.Services.AddScoped<SignInManager<ApplicationUser>>();
+            //builder.Services.AddScoped<RoleManager<IdentityRole>>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    //options.User.RequireUniqueEmail = true;
+                    //options.Password.RequireUppercase = true;
+                    //options.Password.RequireLowercase = true;
+                }).AddEntityFrameworkStores<AppDbContext>();
+
             #endregion
 
             var app = builder.Build();
@@ -63,7 +78,7 @@ namespace Demo.PL
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             #endregion
             app.Run();

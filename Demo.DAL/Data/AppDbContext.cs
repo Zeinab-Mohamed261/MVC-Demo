@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Data.Configurations;
+using Demo.DAL.Models;
 using Demo.DAL.Models.DepartmentModel;
 using Demo.DAL.Models.EmployeeModel;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace Demo.DAL.Data
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<ApplicationUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options):base(options)
         {
