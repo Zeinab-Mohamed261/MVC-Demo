@@ -1,5 +1,6 @@
 ﻿using Demo.BLL.DTO.DepartmentsDtos;
 using Demo.BLL.DTO.EmploeesDtos;
+using Demo.BLL.Services.AttachmentService;
 using Demo.BLL.Services.Classes;
 using Demo.BLL.Services.Intrfaces;
 using Demo.DAL.Models.EmployeeModel;
@@ -12,7 +13,8 @@ namespace Demo.PL.Controllers
     public class EmployeeController (IEmployeeService _employeeService,
                                       IDepartmentService _departmentService,
                                       ILogger<EmployeeController> _logger,
-                                      IWebHostEnvironment _environment) : Controller
+                                      IWebHostEnvironment _environment ,
+                                      IAttachmentService attachmentService) : Controller
     {
         public IActionResult Index(string? EmployeeSearchName)
         {
@@ -70,10 +72,10 @@ namespace Demo.PL.Controllers
                         PhoneNumber = employeeDto.PhoneNumber,
                         Salary = employeeDto.Salary,
                         DepartmentId = employeeDto.DepartmentId,
+                        Image = employeeDto.Image,
                     };
                     //create => created , saveChanges()
-                    /*int result = */
-                    _employeeService.CreateEmployee(employeeCreatedDto);
+                    int result =_employeeService.CreateEmployee(employeeCreatedDto);
                     //update => updated , saveChanges()
                     //edit deptId => updated , saveChanges()
 
@@ -84,19 +86,19 @@ namespace Demo.PL.Controllers
 
 
                     //3.TempData  action =>acrion
-                    //if (result > 0)
-                    //{
-                    //    TempData["Message"] = "Employee Created Successfully";
-                    //    return RedirectToAction(nameof(Index));
-                    //}
-                            
-                    //else
-                    //{
-                    //    TempData["Message"] = "Employee Creatiob failed";
-                    //    ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
-                    //    return RedirectToAction(nameof(Index));
-                    //    //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
-                    //}
+                    if (result > 0)
+                    {
+                        TempData["Message"] = "Employee Created Successfully";
+                        return RedirectToAction(nameof(Index));
+                    }
+
+                    else
+                    {
+                        TempData["Message"] = "Employee Creatiob failed";
+                        ModelState.AddModelError(string.Empty, "Employee Can't Be Created !!");
+                        return RedirectToAction(nameof(Index));
+                        //return View(employeeDto);  //employeeDto :عشان لو دلت حاجة غلط ميرجعش الفورم فاضى تاني 
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -215,8 +217,11 @@ namespace Demo.PL.Controllers
             try
             {
                 var deleted = _employeeService.DeleteEmployee(id);
-                if(deleted) 
+                if(deleted)
+                {
+                    
                     return RedirectToAction(nameof(Index));
+                }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Employee is not Deleted");
