@@ -73,8 +73,8 @@ namespace Demo.PL
 
             app.UseRouting();
 
-            //app.UseAuthentication(); //owner
-            //app.UseAuthorization();  //Admin
+            app.UseAuthentication(); //owner
+            app.UseAuthorization();  //Admin
 
             app.MapControllerRoute(
                 name: "default",

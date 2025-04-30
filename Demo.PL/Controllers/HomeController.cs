@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Demo.PL.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Demo.PL.Controllers
@@ -12,7 +13,7 @@ namespace Demo.PL.Controllers
         {
             _logger = logger;
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             return View();
