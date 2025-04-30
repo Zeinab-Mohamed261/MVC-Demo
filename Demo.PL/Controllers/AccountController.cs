@@ -86,5 +86,31 @@ namespace Demo.PL.Controllers
         }
         #endregion
 
+        #region ForgetPassword
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+        #endregion
+
+        #region SendResetPasswordLink
+        [HttpPost]
+        public IActionResult SendResetPasswordLink(ForgetPasswordViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = userManager.FindByEmailAsync(viewModel.Email).Result;
+                if(user is not null )
+                {
+                    //Send Email
+                }
+                
+            }
+            ModelState.AddModelError(string.Empty, "Invalid Operation");
+            return View(nameof(ForgetPassword), viewModel);
+        }
+        #endregion
+
     }
 }
