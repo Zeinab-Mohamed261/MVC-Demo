@@ -1,9 +1,11 @@
 ﻿using Demo.DAL.Models;
 using Demo.PL.Utilities;
+using Demo.PL.ViewModels;
 using Demo.PL.ViewModels.Account;
 using Demo.Presentation.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 
 namespace Demo.PL.Controllers
 {
@@ -104,12 +106,15 @@ namespace Demo.PL.Controllers
                 var user = userManager.FindByEmailAsync(viewModel.Email).Result;
                 if(user is not null )
                 {
+                    var Token = userManager.GeneratePasswordResetTokenAsync(user).Result;
+                    //baseUrl/Account/ResetPassword[Actin]/zm664278@gmail.com/token
+                    var ResetPasswordUrl = Url.Action("ResetPassword" , "Account" , new {email = viewModel.Email , Token} , Request.Scheme);
                     //Create Email
                     var email = new Email()
                     {
                         To = viewModel.Email,
                         Subject = "Reset Password",
-                        Body = "Reset Password Link"   //ToDo
+                        Body = ResetPasswordUrl   //ToDo
                     };
                     //Send Email
                     EmailSetting.SendEmail(email);
@@ -120,10 +125,44 @@ namespace Demo.PL.Controllers
             ModelState.AddModelError(string.Empty, "Invalid Operation");
             return View(nameof(ForgetPassword), viewModel);
         }
-
+        [HttpGet]
         public IActionResult CheckYourInbox()
         {
             return View();
+        }
+        [HttpGet]
+        //https://localhost:7009/Account/ResetPassword?email=zm664278@gmail.com&Token=CfDJ8H3WZFtr2upHneXDy6ulHlU9K2bZLils8bYrYAgtiK8Un7noYDEVQxWBovRkD8A1brnhGjMCUCRGr7WLjuUeZL%2FjHV8i%2BlnawX3dOyXxmpv0NbHQ%2B2xs3XIUy3XBQR%2FjLb8xW2g4UHV%2FdHc8FPWGWuVS7MjbtZ8VPuZqA86a1jW4NcNzFFYqcvRePGWq5Th2P5nwD%2FVL9i%2FGaTn7%2BdxsdUuJYIesJSt3pmAeBvWQGwyI
+        public IActionResult ResetPassword(string email , string Token)
+        {
+            TempData["email"] = email;
+            TempData["Token"] = Token;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordViewModel viewModel)
+        {
+            if(!ModelState.IsValid)  return View(viewModel);
+            string email = TempData["email"] as string ?? string.Empty ;
+            string Token = TempData["Token"] as string ?? string.Empty;
+
+            var user = userManager.FindByEmailAsync(email).Result;
+            if (user != null)
+            {
+               var Result = userManager.ResetPasswordAsync(user , Token , viewModel.Password).Result;
+                if(Result.Succeeded)
+                {
+                    return RedirectToAction(nameof(Login));
+                }
+                else
+                {
+                    foreach(var error in Result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            return View(nameof(ResetPassword) , viewModel);
         }
         #endregion
 
