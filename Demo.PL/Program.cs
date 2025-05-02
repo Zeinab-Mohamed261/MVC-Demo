@@ -52,7 +52,7 @@ namespace Demo.PL
                     //options.User.RequireUniqueEmail = true;
                     //options.Password.RequireUppercase = true;
                     //options.Password.RequireLowercase = true;
-                }).AddEntityFrameworkStores<AppDbContext>();
+                }).AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
             #endregion
 
@@ -73,8 +73,8 @@ namespace Demo.PL
 
             app.UseRouting();
 
-            //app.UseAuthentication(); //owner
-            //app.UseAuthorization();  //Admin
+            app.UseAuthentication(); //owner
+            app.UseAuthorization();  //Admin
 
             app.MapControllerRoute(
                 name: "default",
