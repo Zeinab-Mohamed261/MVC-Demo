@@ -1,4 +1,5 @@
 ﻿using Demo.DAL.Models;
+using Demo.PL.Utilities;
 using Demo.PL.ViewModels.Account;
 using Demo.Presentation.Models;
 using Microsoft.AspNetCore.Identity;
@@ -103,12 +104,26 @@ namespace Demo.PL.Controllers
                 var user = userManager.FindByEmailAsync(viewModel.Email).Result;
                 if(user is not null )
                 {
+                    //Create Email
+                    var email = new Email()
+                    {
+                        To = viewModel.Email,
+                        Subject = "Reset Password",
+                        Body = "Reset Password Link"   //ToDo
+                    };
                     //Send Email
+                    EmailSetting.SendEmail(email);
+                    return RedirectToAction("CheckYourInbox");
                 }
                 
             }
             ModelState.AddModelError(string.Empty, "Invalid Operation");
             return View(nameof(ForgetPassword), viewModel);
+        }
+
+        public IActionResult CheckYourInbox()
+        {
+            return View();
         }
         #endregion
 
